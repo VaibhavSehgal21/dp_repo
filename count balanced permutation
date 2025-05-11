@@ -1,0 +1,109 @@
+class Solution {
+public:
+    int n;
+    long long M = 1e9 + 7;
+    long long totalPerm = 0;
+    long long total = 0;
+
+    int solve(int digit, int evenIndexDigitsCount, int currSum,
+              vector<int>& freq, vector<long long>& fermatFact,
+              vector<vector<vector<int>>>& dp) {
+
+        if (digit == 10) {
+
+            if (evenIndexDigitsCount == (n + 1) / 2 && currSum == (total / 2)) {
+                return totalPerm;
+            }
+
+            return 0;
+        }
+
+        if (dp[digit][evenIndexDigitsCount][currSum] != -1)
+            return dp[digit][evenIndexDigitsCount][currSum];
+
+        int ways = 0;
+
+        for (int count = 0;
+             count <= min(freq[digit], (n + 1) / 2 - evenIndexDigitsCount);
+             count++) {
+            int evenPosCount = count;
+            int oddPosCount = freq[digit] - count;
+
+            long long div =
+                fermatFact[evenPosCount] * fermatFact[oddPosCount] % M;
+
+            long long val =
+                solve(digit + 1, evenIndexDigitsCount + evenPosCount,
+                      currSum + digit * count, freq, fermatFact, dp);
+
+            ways = (ways + (val * div) % M) % M; // might change
+        }
+
+        return dp[digit][evenIndexDigitsCount][currSum] = ways % M;
+    }
+
+    // Binary Exponentiation
+
+    long long findPower(long long a, long long b) {
+
+        if (b == 0) {
+            return 1;
+        }
+        long long half = findPower(a, b / 2);
+        long long ans = (half * half) % M;
+
+        if (b % 2) {
+            ans = (a * ans) % M;
+        }
+
+        return ans % M;
+    }
+
+    int countBalancedPermutations(string s) {
+
+        vector<int> freq(10, 0);
+        n = s.size();
+
+        for (int i = 0; i < n; i++) {
+            total += (s[i] - '0');
+            freq[s[i] - '0']++;
+        }
+
+        if (total % 2) {
+            return 0;
+        }
+
+        int target = total / 2;
+        int maxEven = (n + 1) / 2;
+
+        // Computing factorial (x!)
+
+        vector<long long> fact(n + 1, 1);
+
+        for (int i = 2; i <= n; i++) {
+            fact[i] = (1LL * i * fact[i - 1]) % M;
+        }
+
+        // Computing factorial Inverse ((1/x)! %M)
+
+        vector<long long> fermatFact(n + 1, 1);
+
+        for (int i = 0; i <= n; i++) {
+
+            fermatFact[i] = findPower(fact[i], M - 2) % M;
+        }
+
+        totalPerm = (fact[n / 2] * fact[(n + 1) / 2]) % M;
+
+        int digit = 0;
+        int evenIndexDigitsCount = 0;
+        int currSum = 0;
+
+        vector<vector<vector<int>>> dp(
+            10,
+            vector<vector<int>>((n + 1) / 2 + 1, vector<int>(total + 1, -1)));
+
+        return solve(digit, evenIndexDigitsCount, currSum, freq, fermatFact,
+                     dp);
+    }
+};
