@@ -1,0 +1,28 @@
+ int f(int ind,int last_ind, vector<int>& arr,vector<vector<int>> &dp){
+        
+        if(ind==arr.size()){
+            return 0;
+        }
+        
+        if(dp[ind][last_ind]!=-1 )return dp[ind][last_ind];
+        
+        int  take =0,nontake=0;
+        
+        if(last_ind==arr.size() || arr[last_ind]<arr[ind] ){
+            take=1+f(ind+1,ind,arr,dp);
+            
+        }
+        
+        nontake=f(ind+1,last_ind,arr,dp);
+        
+        return dp[ind][last_ind]=max(take,nontake);
+        
+        
+    }
+    
+    int lis(vector<int>& arr) {
+        // code here
+        int n =arr.size();
+        vector<vector<int>> dp(n,vector<int>(n+1,-1));
+        return f(0,n,arr,dp);
+    }
