@@ -1,0 +1,58 @@
+  bool check(string s, string t){
+        
+        int n=s.length();
+        
+        for(int i=0;i<n;i++){
+            
+            string temp= s.substr(0,i)+s.substr(i+1);
+            
+            if(temp==t){
+                return true;
+            }
+            
+        }
+        
+        
+        return false;
+    }
+  
+    int longestStringChain(vector<string>& words) {
+        // Code here
+        sort(words.begin(),words.end(),[](string a,string b){
+            
+        return a.length()<b.length();
+            
+          
+        });
+        
+        int n =words.size();
+        
+        
+        
+        unordered_map<string,int> dp;
+        int maxi=0;
+        
+        
+        for(int ind =0;ind<n;ind++){
+                string s=words[ind];
+                dp[s]=1;
+            for(int i=0;i<s.length();i++){
+                
+                string temp=s.substr(0,i)+s.substr(i+1);
+                
+                if( dp.find(temp)!=dp.end() && dp[temp]+1>dp[s] )
+                {
+                   dp[s]=1+dp[temp]; 
+                }
+                
+            }
+        }
+        
+        for(auto x: dp){
+            maxi=max(x.second,maxi);
+        }
+        
+        
+        return maxi;        
+      
+    }
