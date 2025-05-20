@@ -1,0 +1,33 @@
+int f(int ind,int mini,vector<int> & arr){
+
+      if(ind==arr.size()){
+        return 0;
+      }
+
+      mini=min(arr[ind],mini);
+
+      int currProfit=arr[ind]-mini;
+
+      int futProfit= f(ind+1,mini,arr);
+
+      return max(currProfit,futProfit);
+   }
+
+    int maxProfit(vector<int>& arr) {
+        
+        int  maxProfit=0;
+        int n=arr.size();
+        int mini=0;
+        for(int i =0;i<n;i++){
+               
+           if(arr[mini]>arr[i]){
+            mini=i;
+           }    
+
+           maxProfit =max(maxProfit,arr[i]-arr[mini]);
+                
+        }
+
+        return maxProfit;
+
+    }
