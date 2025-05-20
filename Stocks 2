@@ -1,0 +1,94 @@
+ int f(int ind ,int mini,vector<int>& arr ){
+       
+       if(ind==arr.size()) return 0;
+        int profit=0;
+       if(arr[ind]>arr[mini]){
+        profit+=(arr[ind]-arr[mini]);
+       }
+
+       profit+=f(ind+1,ind,arr);
+
+       return profit;
+
+   }
+
+
+    int maxProfit(vector<int>& arr) {
+
+        int n =arr.size();
+        int profit=0;
+        int mini=0;
+
+        for(int i =0;i<n;i++){
+
+            if(arr[i]-arr[mini]>0){
+                profit+=(arr[i]-arr[mini]);
+            }
+                mini=i;
+        }
+        
+        return f(0,0,arr);
+        
+    }
+
+
+// Method 2 Recuurssion
+
+
+ int f(int ind,int buy, const vector<int>& arr,vector<vector<int>>& dp){
+         
+         if(ind==arr.size()) return 0;
+          
+         if(dp[ind][buy]!=-1) return dp[ind][buy];
+         int profit=0; 
+         if(buy==0){
+              
+            profit=max(-arr[ind]+f(ind+1,1,arr,dp),f(ind+1,0,arr,dp));
+         }
+
+         else{
+            profit=max(arr[ind]+f(ind+1,0,arr,dp),f(ind+1,1,arr,dp));
+         }
+         
+
+         return dp[ind][buy]=profit;
+
+
+    }
+
+int Solution::maxProfit(const vector<int> &arr) {
+    int n=arr.size();
+        //   vector<vector<int>> dp(n+1,vector<int>(2,0));
+          vector<int> dp(2,0);
+          
+
+               for(int ind=n-1;ind>=0;ind--){
+                    vector<int> curr(2,0);
+                   
+           for(int buy=1;buy>=0;buy--){
+               
+               int profit=0; 
+         if(buy==0){
+              
+            profit=max(-arr[ind]+dp[1],dp[0]);
+         }
+
+         else{
+            profit=max(arr[ind]+dp[0],dp[1]);
+         }
+         
+
+        curr[buy]=profit;
+               
+               
+           }
+           dp=curr;
+           }
+
+
+          return dp[0];
+          
+          
+          
+}
+ 
